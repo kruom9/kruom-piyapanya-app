@@ -13,7 +13,9 @@ import {
   parseRoute,
   passed,
   practiceSetForLesson,
+  prepareItems,
   renderLessonHtml,
+  shuffleChoices,
   starsFor,
   subjectLabel,
 } from '../js/logic.js';
@@ -46,6 +48,35 @@ test('answer index is zero-based and accepts object or number', () => {
   assert.equal(correctIndex('2'), 2);
   assert.equal(isChoiceCorrect({ index: 1 }, 1), true);
   assert.equal(isChoiceCorrect({ index: 1 }, 0), false);
+});
+
+test('shuffling moves the correct choice and keeps it correct', () => {
+  const item = {
+    id: 1,
+    status: 'draft',
+    choices: ['55', '45', '50', '35'],
+    answer: { index: 0, origin: 'keep' },
+  };
+  let cursor = 0;
+  const rolls = [0, 0, 0];
+  const shuffled = shuffleChoices(item, () => rolls[cursor++]);
+  assert.deepEqual(item.choices, ['55', '45', '50', '35']);
+  assert.equal(item.answer.index, 0);
+  assert.deepEqual(shuffled.choices, ['45', '50', '35', '55']);
+  assert.equal(shuffled.answer.index, 3);
+  assert.equal(shuffled.answer.origin, 'keep');
+  assert.equal(shuffled.status, 'draft');
+  assert.equal(isChoiceCorrect(shuffled.answer, 3), true);
+  assert.equal(shuffled.choices[correctIndex(shuffled.answer)], '55');
+  const session = prepareItems([item, { ...item, id: 2, choices: ['ก', 'ข'], answer: { index: 1 } }], () => 0);
+  assert.equal(session[1].choices[correctIndex(session[1].answer)], 'ข');
+  assert.equal(shuffleChoices({ choices: ['เท่านั้น'], answer: { index: 0 } }).answer.index, 0);
+});
+
+test('a later grade uses the same set matching', () => {
+  const sets = [{ kind: 'boss', active: true, code: 'PIYA-BOSS-P6-SC-03', grade_code: 'P6', subject_code: 'SC' }];
+  assert.equal(bossSetForUnit(sets, { code: 'P6-SC-03' }).code, 'PIYA-BOSS-P6-SC-03');
+  assert.equal(examSetsForSubject([{ kind: 'mock', active: true, grade_code: 'P4', subject_code: 'TH', code: 'PIYA-EXAM-P4-TH' }], 'P4', 'TH').length, 1);
 });
 
 test('stars follow 85 and 60 thresholds', () => {

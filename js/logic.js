@@ -89,6 +89,35 @@ export function isChoiceCorrect(answer, choiceIndex) {
   return idx != null && idx === choiceIndex;
 }
 
+function withIndex(answer, index) {
+  if (answer && typeof answer === 'object' && !Array.isArray(answer)) return { ...answer, index };
+  return { index };
+}
+
+/** New choice order for one sitting. The correct text stays correct. */
+export function shuffleChoices(item, random = Math.random) {
+  const choices = Array.isArray(item?.choices) ? item.choices.slice() : null;
+  if (!choices || choices.length < 2) return item;
+  const order = choices.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    const swap = order[i];
+    order[i] = order[j];
+    order[j] = swap;
+  }
+  const original = correctIndex(item.answer);
+  const next = original == null ? -1 : order.indexOf(original);
+  return {
+    ...item,
+    choices: order.map((i) => choices[i]),
+    answer: next >= 0 ? withIndex(item.answer, next) : item.answer,
+  };
+}
+
+export function prepareItems(items, random = Math.random) {
+  return (items || []).map((item) => shuffleChoices(item, random));
+}
+
 export function starsFor(correct, total) {
   if (!total || total < 0 || correct < 0) return 0;
   const pct = (100 * correct) / total;

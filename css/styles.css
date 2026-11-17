@@ -190,6 +190,7 @@ h2, h3 { font-family: "Prompt", "Sarabun", sans-serif; margin: 0 0 8px; line-hei
 .progress-label { margin: 0; font-weight: 700; }
 .bar { height: 10px; background: #efe6d8; border-radius: 99px; overflow: hidden; }
 .bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--teal), #2e9a78); }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .chip {
   justify-self: start;
   margin: 0;
@@ -198,7 +199,13 @@ h2, h3 { font-family: "Prompt", "Sarabun", sans-serif; margin: 0 0 8px; line-hei
   border-radius: 999px;
   padding: 4px 10px;
   font-weight: 700;
+  font-size: 0.95rem;
 }
+.chip.draft {
+  background: #e7f6f3;
+  color: var(--teal);
+}
+h3 .chip.draft { margin-left: 8px; vertical-align: middle; font-size: 0.8rem; }
 .question { font-size: 1.35rem; background: white; border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); overflow-wrap: anywhere; }
 .choices { display: grid; gap: 10px; }
 .choice {

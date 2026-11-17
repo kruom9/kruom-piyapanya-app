@@ -15,6 +15,7 @@ import {
   parseRoute,
   passed,
   percent,
+  prepareItems,
   practiceSetForLesson,
   renderLessonHtml,
   safeHex,
@@ -409,7 +410,14 @@ async function renderSession(route, mode) {
     panel(`<section class="stack">${emptyBlock('กำลังเพิ่มเนื้อหา', 'ยังไม่มีข้อในชุดนี้ เมื่อเพิ่มในคลังแล้ว เปิดหน้านี้ใหม่ได้เลย')}</section>`);
     return;
   }
-  runSession({ items, title, back, mode, lesson: bundle.lesson, examKey: `${mode}:${route.grade}:${route.subject}:${route.lessonId || route.unitId || 'all'}` });
+  runSession({
+    items: prepareItems(items),
+    title,
+    back,
+    mode,
+    lesson: bundle.lesson,
+    examKey: `${mode}:${route.grade}:${route.subject}:${route.lessonId || route.unitId || 'all'}`,
+  });
 }
 
 function runSession({ items, title, back, mode, lesson, examKey }) {
@@ -446,12 +454,21 @@ function runSession({ items, title, back, mode, lesson, examKey }) {
     fill.style.width = `${Math.round((index / items.length) * 100)}%`;
     bar.append(fill);
     head.append(progressLabel, bar);
+    const chips = document.createElement('div');
+    chips.className = 'chip-row';
     if (item.level && LEVEL_NAME[item.level]) {
       const chip = document.createElement('p');
       chip.className = 'chip';
       chip.textContent = LEVEL_NAME[item.level];
-      head.append(chip);
+      chips.append(chip);
     }
+    if (item.status === 'draft') {
+      const badge = document.createElement('p');
+      badge.className = 'chip draft';
+      badge.textContent = 'ฉบับทดลอง';
+      chips.append(badge);
+    }
+    if (chips.childElementCount) head.append(chips);
     section.append(head);
     const question = document.createElement('div');
     question.className = 'question md';
@@ -601,6 +618,12 @@ function runSession({ items, title, back, mode, lesson, examKey }) {
       const block = document.createElement('article');
       const heading = document.createElement('h3');
       heading.textContent = `${ok ? 'ถูก' : 'ผิด'} · ข้อ ${itemIndex + 1}`;
+      if (item.status === 'draft') {
+        const badge = document.createElement('span');
+        badge.className = 'chip draft';
+        badge.textContent = 'ฉบับทดลอง';
+        heading.append(badge);
+      }
       const q = document.createElement('div');
       q.className = 'md';
       q.innerHTML = renderLessonHtml(item.question || '');

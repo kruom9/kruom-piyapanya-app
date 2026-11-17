@@ -56,7 +56,7 @@ export async function fetchAll(schema, path) {
   return rows;
 }
 
-const ITEM_COLUMNS = 'id,lesson_id,grade_code,subject_code,topic,level,item_type,question,choices,answer,hint1,hint2,steps,trap,explanation';
+const ITEM_COLUMNS = 'id,lesson_id,grade_code,subject_code,topic,level,item_type,question,choices,answer,hint1,hint2,steps,trap,explanation,status';
 
 export async function loadCatalog() {
   const [grades, subjects, units, lessons, assets, sets] = await Promise.all([
