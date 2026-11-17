@@ -6,6 +6,8 @@
 
 ที่อยู่เว็บ: https://kruom9.github.io/kruom-piyapanya-app/
 
+เวิร์กโฟลว์ `.github/workflows/pages.yml` จะ deploy เมื่อมีการ push ขึ้น `main` ครั้งแรกต้องตั้ง GitHub Pages ที่ Settings → Pages → Build and deployment → Source เป็น GitHub Actions โทเคนที่ใช้ push ไม่มีสิทธิ์ administration จึงเปิดหน้านี้ให้เองไม่ได้ หลังเปิดแล้วให้รันเวิร์กโฟลว์ Deploy GitHub Pages อีกครั้ง
+
 ## ใช้ในเครื่อง
 
 ```bash
